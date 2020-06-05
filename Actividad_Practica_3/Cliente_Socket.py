@@ -2,6 +2,7 @@
 
 import socket
 import sys
+from subprocess import check_output, STDOUT, CalledProcessError
 
 #Crear socket.
 conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,8 +32,21 @@ def msgLen():
     print("------- Mensaje recibido:"+format(result_msglen[3:6]))
 
 def giveMeMsg():
-    result_givememsg = sendMsg("givememsg ")
-    print("------- Mensaje recibido:"+format(result_givememsg))
+    result_givememsg = sendMsg("givememsg 15006")
+    try:
+        r = check_output(["python3","Socket_UDP.py"],stderr=STDOUT)
+        print("------- Resultado:"+format(r))
+    except CalledProcessError as identifier_check_output:
+        print(identifier_check_output)
+    finally:
+        print("------- Mensaje recibido:"+format(result_givememsg))
+
+def chkmsg():
+    result_chkmsg = sendMsg("givememsg udp_port")
+    print("------- Mensaje recibido:"+format(result_chkmsg))
+
+def bye():
+    pass
 
 try:
     conn.connect(server_address)
@@ -42,7 +56,7 @@ try:
     msgLen()
     giveMeMsg()
 except OSError as identifier:
-    print("------- Error se presntó:"+identifier)
+    print(identifier)
 finally:
     conn.close()
     print("------- Cerrando conexión")
