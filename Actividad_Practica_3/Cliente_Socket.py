@@ -35,12 +35,12 @@ def msgLen():
 
 
 
-def main():
+def thread_catch():
     #Creando el socket para establecer la conexión udp
     socket_udp = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     server_address_UDP = ("localhost",15601)
     socket_udp.bind(server_address_UDP)
-    result = socket_udp.recv(445).decode("utf-8")
+    result = socket_udp.recv(460).decode("utf-8")
     print(format(result)+"\n")
 
     #resultado = call(["echo",'"'+result+'"',"|","base64","-d"])
@@ -56,7 +56,7 @@ def main():
 def giveMeMsg(): 
     try:
         #Se crean los hilos
-        t1 = threading.Thread(name="Hilo_1",target=main)
+        t1 = threading.Thread(name="Hilo_1",target=thread_catch)
         t1.start()
         result_givememsg = sendMsg("givememsg 15601")
         t1.join()
@@ -72,19 +72,29 @@ def chkmsg():
     print("------- Mensaje recibido:"+format(result_chkmsg))
 
 def bye():
-    pass
+    result_bye = sendMsg("bye")
+    print("------ Mensaje de despedida!------"+result_bye)
 
-try:
-    conn.connect(server_address)
-    #socket.create_connection(("localhost",10601))
-    print("------- Conectando socket")
-    helloIam()
-    msgLen()
-    giveMeMsg()
-except OSError as identifier:
-    print(identifier)
-finally:
-    conn.close()
-    print("------- Cerrando conexión")
 
-print("Welcome!")
+
+
+def main():
+    try:
+        conn.connect(server_address)
+        #socket.create_connection(("localhost",10601))
+        print("------- Conectando socket")
+        helloIam()
+        msgLen()
+        giveMeMsg()
+    except OSError as identifier:
+        print(identifier)
+    finally:
+        conn.close()
+        print("------- Cerrando conexión")
+
+
+
+
+
+main()
+print("     Ejecución finalizada!    ")
