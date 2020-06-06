@@ -1,8 +1,10 @@
-#author: Antonio Berardi
 
+#author: Antonio Berardi
 import socket
 import sys
-from subprocess import check_output, STDOUT, CalledProcessError
+import threading
+import base64
+from subprocess import check_output,run,STDOUT,CalledProcessError,call
 
 #Crear socket.
 conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,15 +33,39 @@ def msgLen():
     result_msglen = sendMsg("msglen")
     print("------- Mensaje recibido:"+format(result_msglen[3:6]))
 
-def giveMeMsg():
-    result_givememsg = sendMsg("givememsg 15006")
+
+
+def main():
+    #Creando el socket para establecer la conexión udp
+    socket_udp = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    server_address_UDP = ("localhost",15601)
+    socket_udp.bind(server_address_UDP)
+    result = socket_udp.recv(445).decode("utf-8")
+    print(format(result)+"\n")
+
+    #resultado = call(["echo",'"'+result+'"',"|","base64","-d"])
+    resultado = base64.decodebytes(result.encode("utf-8"))
+    print(resultado)
+    # result_string = base64.b64decode(result.decode("utf-8"))
+    # print("/////// "+result_string)
+    # pf = open("data.txt","w")
+    # pf.write(result.decode("utf-8"))
+    # pf.close()
+    socket_udp.close()
+
+def giveMeMsg(): 
     try:
-        r = check_output(["python3","Socket_UDP.py"],stderr=STDOUT)
-        print("------- Resultado:"+format(r))
+        #Se crean los hilos
+        t1 = threading.Thread(name="Hilo_1",target=main)
+        t1.start()
+        result_givememsg = sendMsg("givememsg 15601")
+        t1.join()
+        
+        #res = run(["python3","Socket_UDP.py"],stderr=STDOUT)
+        #print(res.returncode)
+        print("------- Mensaje recibido:"+format(result_givememsg))
     except CalledProcessError as identifier_check_output:
         print(identifier_check_output)
-    finally:
-        print("------- Mensaje recibido:"+format(result_givememsg))
 
 def chkmsg():
     result_chkmsg = sendMsg("givememsg udp_port")
