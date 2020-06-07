@@ -2,16 +2,17 @@
 #author: Antonio Berardi
 import socket
 import sys
+import os
 import threading
 import base64
 import hashlib
-from subprocess import Popen,PIPE,CalledProcessError
+from subprocess import Popen,PIPE,CalledProcessError,call, check_output
 
 #Crear socket.
 conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #Indicando dirección IP o dominio a conectarse, y por último el puerto.
-server_address = ("localhost",10601)
+server_address = ("192.168.24.1",10601)
 #print("------- Nombre puerto {}, número {} ".format(*server_address))
 
 
@@ -26,7 +27,7 @@ def sendMsg(message):
 
 #Función encargada de construir el mensaje de autenticación con el servidor.
 def helloIam():
-    result_helloIam = sendMsg("helloiam usuario_2")
+    result_helloIam = sendMsg("helloiam adberardi.13")
     print("------- Mensaje recibido:"+format(result_helloIam[0:2]))
 
 #Valida que el número sea múltiplo de 4, para que la librería base64 no tenga problemas de conversión.
@@ -48,31 +49,38 @@ def msgLen():
 
 def thread_catch():
     #Creando el socket para establecer la conexión udp
-    socket_udp = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    server_address_UDP = ("localhost",15006)
-    socket_udp.bind(server_address_UDP)
-    result = socket_udp.recv(448)
-    #print(format(result)+"\n")
-    #resultado = Popen(["echo","-n",'"'+result.decode("utf-8")+'"',"|","base64","-d"],stdout = PIPE)
-    resultado = base64.decodebytes(result)
-    print(format(resultado))
-    md = hashlib.md5()
-    md.update(resultado)
-    # r2 = "Lorem ipsum dolor sit amet, cónsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat noñ proident, sunt in culpa qui officia deserunt mollit anim id est laborum. "
-    # r2 = r2.encode("utf-8")
-    #md.update(r2)
-    print(str(md.hexdigest()))
+    # socket_udp = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    # server_address_UDP = ("192.168.24.1",15601)
+    #socket_udp.bind(server_address_UDP)
+    #socket_udp.sendto(server_address_UDP)
+    #result = socket_udp.recv(444)
+    #resultado = base64.decodebytes(result)
+    #os.system("nc -u -l -p 15601")
+    resultado = Popen(["nc", "-ulp 15601"],stdout=PIPE)
+    r = resultado.communicate()
+    #result = subprocess.check_output(["nc","-ulp","15601"])
     # pf = open("data.txt","w")
-    # pf.write(resultado.decode("utf-8"))
+    # pf.write(str(result))
     # pf.close()
-    socket_udp.close()
+    #resultado = os.system("echo -n "+str(result)+" | base64 -d")
+    #resultado = base64.decodebytes(str(result).encode("utf-8"))
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Soy resultado"+format(r[0])+"\n")
+    resultado_msg = Popen(["echo", "-n",r[0],"|","base64 -d"],stdout=PIPE)
+    r_m = resultado_msg.communicate()
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Soy r_m-> "+format(base64.decodebytes(r[0]).decode("utf-8"))+"\n")
+    md = hashlib.md5()
+    md.update(base64.b64decode(r[0].decode("utf-8")))
+    #md.update("Lo unico que se interpone entre ti y tu sueo, es la voluntad de intentarlo y la creencia de que en realidad es posible. Joel Brown\n".encode("utf-8"))
+    print(str(md.hexdigest()))
+
+    #socket_udp.close()
 
 def giveMeMsg(): 
     try:
         #Se crean los hilos
         t1 = threading.Thread(name="Hilo_1",target=thread_catch)
         t1.start()
-        result_givememsg = sendMsg("givememsg 15006")
+        result_givememsg = sendMsg("givememsg 15601")
         t1.join()
         print("------- Mensaje recibido: givememsg "+format(result_givememsg))
     except CalledProcessError as identifier_check_output:
@@ -80,7 +88,9 @@ def giveMeMsg():
 
 
 def chkmsg():
-    result_chkmsg = sendMsg("chkmsg "+str(md))
+    #result_chkmsg = sendMsg("chkmsg d27293aa83074dfd5c6289f35efafeda")
+    
+    result_chkmsg = sendMsg("chkmsg "+md)
     print("------- Mensaje recibido:"+format(result_chkmsg))
 
 def bye():
