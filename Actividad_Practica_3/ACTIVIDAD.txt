@@ -9,3 +9,14 @@ las demás serán algunas preguntas referentes al código fuente del servidor.
 *En esta tarea, deberás hacer la entrega el código fuente de su cliente con las respectivas instrucciones 
 de compilación (de ser necesarias) y ejecución. La revisión de la pregunta dónde deberá colocar el mensaje 
 que recibió del servidor, dependerá de que el instructor logre ejecutar correctamente su cliente.
+
+
+Instrucciones para ejecutar el proyecto:
+1. Ejecutar el proyecto con el siguiente comando: python3 Cliente_Socket.py
+2. Una vez en ejecución el proyecto, solo se le pedira una vez al usuario que presione la tecla "Enter" para proseguir con la ejecución del codigo, de todas maneras, se le notificará en la terminal del usuario cuando presionar la tecla.
+El mensaje a aparecer se presentará de la siguiente manera:
+
+                Presiona enter para continuar.......
+                ------> Enviando mensaje <------
+
+En ese momento deberá presionar la tecla "Enter". Una vez presionada la tecla el código procederá a finalizar su ejecución.

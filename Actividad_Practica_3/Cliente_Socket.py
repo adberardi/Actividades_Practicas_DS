@@ -30,11 +30,6 @@ def helloIam():
     result_helloIam = sendMsg("helloiam adberardi.13")
     print("------- Mensaje recibido enviando helloiam:"+format(result_helloIam))
 
-#Valida que el número sea múltiplo de 4, para que la librería base64 no tenga problemas de conversión.
-def validate_multiple_four(number_to_validate):
-    if number_to_validate%4 != 0:
-        number_to_validate = number_to_validate * 4
-    return number_to_validate
 
 #Función encargada de construir el mensaje de obtener la longitud del mensaje.
 def msgLen():
