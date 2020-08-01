@@ -9,8 +9,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- *
- * @author adtony45
+ * Actividad RMI Unidad 7
+ * @author adtony45 - Antonio Berardi
  */
 public interface Hola extends Remote{
     public String saludar() throws RemoteException;

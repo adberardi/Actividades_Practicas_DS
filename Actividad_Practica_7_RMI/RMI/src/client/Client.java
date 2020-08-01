@@ -12,8 +12,8 @@ import java.rmi.registry.Registry;
 import remoteobject.Hola;
 
 /**
- *
- * @author adtony45
+ * Actividad RMI Unidad 7
+ * @author adtony45 - Antonio Berardi
  */
 public class Client {
 

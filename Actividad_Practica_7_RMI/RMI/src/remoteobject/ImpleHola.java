@@ -9,8 +9,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
- *
- * @author adtony45
+ * Actividad RMI Unidad 7
+ * @author adtony45 - Antonio Berardi
  */
 public class ImpleHola extends UnicastRemoteObject implements Hola {
     
